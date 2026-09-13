@@ -268,6 +268,7 @@ module Make (X : Set.OrderedType) = struct
   type t = {
     trie: trie;
     fp: fingerprint_fun;
+    given_name: string
   }
 
   and trie =
@@ -276,10 +277,10 @@ module Make (X : Set.OrderedType) = struct
     | Leaf of Leaf.t  (** The index *)
 
   let default_fp = fp7m
-  let empty () = { trie = Empty; fp = default_fp }
-  let empty_with fp = { trie = Empty; fp }
+  let empty name = { trie = Empty; fp = default_fp ; given_name = name }
+  let empty_with fp = { trie = Empty; fp ; given_name = ""}
   let get_fingerprint idx = idx.fp
-  let name = "fingerprint_idx"
+  let name = "fingerprint index"
 
   let is_empty idx =
     let rec is_empty trie =
@@ -292,6 +293,7 @@ module Make (X : Set.OrderedType) = struct
 
   (** add t -> data to the trie *)
   let add idx t data =
+    let () = print_string ("insert in " ^ idx.given_name ^ ": " ^ (T.TPTP.to_string t) ^ "\n") in
     (* recursive insertion *)
     let rec recurse trie features =
       match trie, features with

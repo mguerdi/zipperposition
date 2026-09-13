@@ -41,7 +41,7 @@ module type TERM_IDX = sig
   module Leaf : LEAF with type elt = elt
 
   val name : string
-  val empty : unit -> t
+  val empty : string -> t
   val is_empty : t -> bool
   val size : t -> int
   val add : t -> term -> elt -> t

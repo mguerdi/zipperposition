@@ -101,7 +101,7 @@ module Make (E : Index.EQUATION) = struct
   }
   (* The discrimination tree *)
 
-  let empty () = { map = ID.Map.empty; star = None; leaf = Leaf.empty }
+  let empty _str = { map = ID.Map.empty; star = None; leaf = Leaf.empty }
 
   let is_empty n =
     n.star = None && ID.Map.is_empty n.map && Leaf.is_empty n.leaf
@@ -258,6 +258,7 @@ module MakeTerm (X : Set.OrderedType) = struct
 
   type elt = X.t
 
+
   type t = {
     star: t option; (* by variable *)
     map: t SIMap.t; (* by symbol+arity *)
@@ -265,7 +266,7 @@ module MakeTerm (X : Set.OrderedType) = struct
   }
   (** The discrimination tree *)
 
-  let empty () = { map = SIMap.empty; star = None; leaf = Leaf.empty }
+  let empty _str = { map = SIMap.empty; star = None; leaf = Leaf.empty }
   let is_empty n = n.star = None && SIMap.is_empty n.map && Leaf.is_empty n.leaf
 
   exception NoSuchTrie
@@ -318,6 +319,7 @@ module MakeTerm (X : Set.OrderedType) = struct
     goto trie (iterate t) (fun t -> t)
 
   let add trie t data =
+    let () = print_string ("insert " ^  (T.to_string t) ^ "\n") in 
     let k leaf = Leaf.add leaf t data in
     goto_leaf trie t k
 
@@ -378,7 +380,8 @@ module MakeTerm (X : Set.OrderedType) = struct
     in
     try traverse (fst dt) (iterate (fst t)) with e -> raise e
 
-  let retrieve_unifiables = retrieve_unifiables_aux Leaf.fold_unify
+  let retrieve_unifiables = 
+      retrieve_unifiables_aux Leaf.fold_unify
 
   let retrieve_unifiables_complete ?(unif_alg = JP_unif.unify_scoped) =
     retrieve_unifiables_aux (Leaf.fold_unify_complete ~unif_alg)

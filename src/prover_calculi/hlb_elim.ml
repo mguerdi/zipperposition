@@ -76,10 +76,10 @@ module Make (E : Env.S) : S with module Env = E = struct
 
   exception RuleNotApplicable
 
-  let prems_ = ref (PremiseIdx.empty ())
-  let concls_ = ref (ConclusionIdx.empty ())
-  let units_ = ref (UnitIdx.empty ())
-  let propagated_ = ref (PropagatedLitsIdx.empty ())
+  let prems_ = ref (PremiseIdx.empty "premise index")
+  let concls_ = ref (ConclusionIdx.empty "conclusion index")
+  let units_ = ref (UnitIdx.empty "unit index")
+  let propagated_ = ref (PropagatedLitsIdx.empty "propagated lits index")
   let propagated_size_ = ref 0
 
   (* occurrences of the clause in the premise_idx *)

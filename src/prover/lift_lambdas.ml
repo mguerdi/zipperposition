@@ -62,7 +62,7 @@ module Make (E : Env.S) : S with module Env = E = struct
 
   let setup () = ()
   let sc t = t, 0
-  let idx = ref (Idx.empty ())
+  let idx = ref (Idx.empty "")
 
   let loose_bound_to_fvars ~counter t =
     let rec aux ~depth ~lb_map ~subst t =

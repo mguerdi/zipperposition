@@ -40,8 +40,8 @@ module Make (C : Clause.S) = struct
   let on_pred_skolem_introduction : (C.t * Logtk.Term.t) Logtk.Signal.t =
     Signal.create ()
 
-  let _skolem_idx = ref @@ Idx.empty ()
-  let _renaming_idx = ref @@ Idx.empty ()
+  let _skolem_idx = ref @@ Idx.empty "skolem idx"
+  let _renaming_idx = ref @@ Idx.empty "renaming idx"
   let _renamer_symbols = ref @@ ID.Set.empty
 
   (* Two-literal clause of which one is a renaming literal
