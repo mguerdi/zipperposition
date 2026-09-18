@@ -113,20 +113,23 @@ let _NO_LAMSUP = -1
 
 let query_hook f t name = 
    let res = f t in
-   let () = print_string ("query  in " ^ name ^ " : " ^ (Scoped.to_string T.TPTP.pp t) ^ "\n") in
-   let n = Iter.length res in
+   let () = print_string ("query(" ^ name ^ ", " ^ (T.TPTP.to_string (fst t)) ^ ")\n") in
+   (*let n = Iter.length res in
    let (res_str, _) = Iter.fold (fun (acc, count) (t, _, _) -> 
       if count = n then
          ((acc ^ (T.TPTP.to_string t) ), 0)
       else
-         ((acc ^ ", " ^ (T.TPTP.to_string t) ), 0)) ("[", n) res
+         ((acc ^ "\n" ^ (T.TPTP.to_string t) ), 0)) ("[", n) res
    in
-   let res_str = res_str ^ "]" in
-   let () = print_string ("results: " ^ res_str ^ "\n") in
+   let res_str = res_str ^ "]" in*)
+   let res_print (t, _, _) = print_string ("results(" ^ T.TPTP.to_string t ^ ")\n") in
+   (*let () = Iter.fold (fun _ _ -> ()) () (Iter.map res_print res) in*)
+   let () = Iter.iter res_print res in
    res
 
+
 let insert_hook f t = 
-   let () = print_string ("insert: " ^ (Scoped.to_string T.pp t) ^ "\n") in
+   let () = print_string ("insert(" ^ (Scoped.to_string T.pp t) ^ ")\n") in
    f t
 
 let get_unif_module (module E : Env.S) : (module UnifFramework.US) =
@@ -149,13 +152,13 @@ module Make (Env : Env.S) : S with module Env = Env = struct
 
   (** {6 Index Management} *)
 
-  let _idx_sup_into = ref (TermIndex.empty "soup into")
-  let _idx_lambdasup_into = ref (TermIndex.empty "lambda soup into")
-  let _idx_fluidsup_into = ref (TermIndex.empty "fluid soup into")
-  let _idx_subvarsup_into = ref (TermIndex.empty "subvar soup into")
-  let _idx_dupsup_into = ref (TermIndex.empty "dupe soupe into" )
-  let _idx_sup_from = ref (TermIndex.empty "index soup from" )
-  let _idx_back_demod = ref (TermIndex.empty "index back demod")
+  let _idx_sup_into = ref (TermIndex.empty "idx_sup_into")
+  let _idx_lambdasup_into = ref (TermIndex.empty "idx_lambdasup_into")
+  let _idx_fluidsup_into = ref (TermIndex.empty "idx_fluidsup_into")
+  let _idx_subvarsup_into = ref (TermIndex.empty "idx_subvarsup_into")
+  let _idx_dupsup_into = ref (TermIndex.empty "idx_dupsup_into" )
+  let _idx_sup_from = ref (TermIndex.empty "idx_sup_from" )
+  let _idx_back_demod = ref (TermIndex.empty "idx_back_demod")
   let _idx_fv = ref (SubsumIdx.empty ())
   (* let _idx_fv = ref (SubsumIdx.of_signature (Ctx.signature()) ()) *)
 
@@ -1322,7 +1325,7 @@ module Make (Env : Env.S) : S with module Env = Env = struct
                  None
              in
              (* rewrite clauses using s *)
-             query_hook (retrieve_from_index (!_idx_sup_into, 1)) (s, 0) "soup into index"
+             query_hook (retrieve_from_index (!_idx_sup_into, 1)) (s, 0) "idx_sup_into"
              |> Iter.filter_map (process_retrieved do_sup))
       |> Iter.to_rev_list
     in
@@ -1378,7 +1381,7 @@ module Make (Env : Env.S) : S with module Env = Env = struct
              in
              (* all terms that occur in an equation in the active_set
               and that are potentially unifiable with u_p (u at position p) *)
-             query_hook (retrieve_from_index (!_idx_sup_from, 1)) (u_p, 0) "soup from index"
+             query_hook (retrieve_from_index (!_idx_sup_from, 1)) (u_p, 0) "idx_sup_from"
              |> Iter.filter_map (process_retrieved do_sup))
       |> Iter.to_rev_list
     in
@@ -1431,7 +1434,7 @@ module Make (Env : Env.S) : S with module Env = Env = struct
 
              do_superposition info
            in
-           query_hook (I.retrieve_unifiables (!_idx_lambdasup_into, 1)) (s, 0) "lambdasoup into index"
+           query_hook (I.retrieve_unifiables (!_idx_lambdasup_into, 1)) (s, 0) "idx_lambdasup_into"
            |> Iter.filter_map (fun (u_p, with_pos, subst) ->
                   do_lambdasup u_p with_pos subst))
     |> Iter.to_rev_list
@@ -1508,7 +1511,7 @@ module Make (Env : Env.S) : S with module Env = Env = struct
              in
              (* all terms that occur in an equation in the active_set
               and that are potentially unifiable with u_p (u at position p) *)
-             query_hook (I.retrieve_unifiables (!_idx_sup_from, 1)) (u_p, 0) "soup from index"
+             query_hook (I.retrieve_unifiables (!_idx_sup_from, 1)) (u_p, 0) "idx_sup_from"
              |> Iter.filter_map (fun (t, p, s) -> do_sup t p s))
       |> Iter.to_rev_list
     in

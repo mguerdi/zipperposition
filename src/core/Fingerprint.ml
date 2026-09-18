@@ -293,7 +293,7 @@ module Make (X : Set.OrderedType) = struct
 
   (** add t -> data to the trie *)
   let add idx t data =
-    let () = print_string ("insert in " ^ idx.given_name ^ ": " ^ (T.TPTP.to_string t) ^ "\n") in
+    let () = print_string ("insert(" ^ idx.given_name ^ ", " ^ (T.TPTP.to_string t) ^ ")\n") in
     (* recursive insertion *)
     let rec recurse trie features =
       match trie, features with

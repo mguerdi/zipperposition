@@ -1232,7 +1232,7 @@ module TPTP = struct
             l
       | Const s -> ID.pp_tstp out s
       | App (f, l) ->
-        Format.fprintf out "%a" (Util.pp_list ~sep:" @ " pp_enclosed) (f :: l)
+        Format.fprintf out "%a(%a)" pp_rec f (Util.pp_list ~sep:", " pp_rec) l
       | Fun _ ->
         let ty_args, bod = as_fun t in
         let vars = List.mapi (fun i ty -> i + !depth, ty) ty_args in
@@ -1258,7 +1258,7 @@ module TPTP = struct
     in
     pp_rec out t
 
-  let pp buf t = Format.fprintf buf "(@[%a@])" (pp_depth 0) t
+  let pp buf t = Format.fprintf buf "term(@[%a@])" (pp_depth 0) t
   let to_string = CCFormat.to_string pp
 end
 
