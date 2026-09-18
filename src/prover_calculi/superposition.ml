@@ -122,7 +122,7 @@ let query_hook f t name =
          ((acc ^ "\n" ^ (T.TPTP.to_string t) ), 0)) ("[", n) res
    in
    let res_str = res_str ^ "]" in*)
-   let res_print (t, _, _) = print_string ("results(" ^ T.TPTP.to_string t ^ ")\n") in
+   let res_print (t, _, _) = print_string ("result(" ^ T.TPTP.to_string t ^ ")\n") in
    (*let () = Iter.fold (fun _ _ -> ()) () (Iter.map res_print res) in*)
    let () = Iter.iter res_print res in
    res
